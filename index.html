@@ -33,7 +33,6 @@
         /* --- 2. 头部 Hero Section (高级视差背景) --- */
         .header {
             position: relative; height: 92vh; 
-            /* 视觉升级：背景图 + 红色遮罩 */
             background: linear-gradient(135deg, rgba(142, 14, 0, 0.85), rgba(31, 28, 24, 0.9)),
                         url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop'); 
             background-size: cover;
@@ -294,6 +293,90 @@
             .stats-grid, .theory-layout, .chart-grid, .resource-grid, .framework-grid, .impl-item, .gallery-grid { grid-template-columns: 1fr; } 
             .nav-links { display: none; } 
             .pledge-content { padding: 0 20px; }
+        }
+
+        /* --- 艺术级页脚 (Artistic Footer) --- */
+        .footer-artistic {
+            position: relative;
+            background: linear-gradient(to bottom, #8E0E00, #1a0505);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 80px 0 50px;
+            margin-top: 100px;
+            text-align: center;
+            overflow: hidden;
+            /* 顶部波浪切割 */
+            clip-path: polygon(0 15%, 100% 0, 100% 100%, 0% 100%);
+        }
+        /* 底部光晕 */
+        .footer-artistic::before {
+            content: ''; position: absolute; bottom: -50%; left: 50%; transform: translateX(-50%);
+            width: 80%; height: 80%;
+            background: radial-gradient(circle, rgba(255, 193, 7, 0.15), transparent 70%);
+            pointer-events: none;
+        }
+
+        .footer-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            background: linear-gradient(to right, #fff, #ffc107);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-info {
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* 成员卡片容器 */
+        .team-container {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+            margin-bottom: 50px;
+        }
+
+        /* 成员卡片 */
+        .team-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1rem;
+            color: #fff;
+            transition: all 0.3s ease;
+            cursor: default;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .team-card i { color: var(--accent); }
+
+        .team-card:hover {
+            background: rgba(255, 193, 7, 0.2);
+            border-color: var(--accent);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        .back-to-top {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.6);
+            padding: 10px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .back-to-top:hover {
+            background: white;
+            color: #8E0E00;
         }
     </style>
 </head>
@@ -561,11 +644,21 @@
             </div>
         </section>
 
-        <footer style="background: #1a1a1a; color: white; padding: 60px 20px; text-align: center; margin-top: 50px;">
-            <h2 style="margin-bottom: 20px;">行知清朗 E-SPACE 项目组</h2>
-            <p>指导老师：王娜 | 浙江师范大学行知学院</p>
-            <div style="margin-top: 20px; color: #aaa;">
-                项目成员：陈佳凌、黄奕、袁璐茜、陆楚璇
+        <footer class="footer-artistic">
+            <div class="container">
+                <h2 class="footer-title">行知清朗 E-SPACE 项目组</h2>
+                <p class="footer-subtitle">指导老师：王娜 | 浙江师范大学行知学院</p>
+                
+                <div class="team-container">
+                    <span class="member-tag"><i class="fas fa-user"></i> 陈佳凌</span>
+                    <span class="member-tag"><i class="fas fa-user"></i> 黄奕</span>
+                    <span class="member-tag"><i class="fas fa-user"></i> 袁璐茜</span>
+                    <span class="member-tag"><i class="fas fa-user"></i> 陆楚璇</span>
+                </div>
+
+                <button class="back-to-top" onclick="window.scrollTo(0,0)">
+                    <i class="fas fa-arrow-up"></i> 回到顶部
+                </button>
             </div>
         </footer>
 
@@ -600,7 +693,6 @@
         <script src="https://unpkg.com/leancloud-storage@4.12.0/dist/av-min.js"></script>
         <script>
             // --- 1. LeanCloud 初始化 ---
-            // ⚠️ 必填：请在此处填入你的 LeanCloud 密钥
             const APP_ID = "fUQlsmdwimD8CkUDvirxrOSz-MdYXbMMI";
             const APP_KEY = "vIP5C42sbdnnftyHFPj1y5mj";
             const SERVER_URL = "https://fuqlsmdw.api.lncldglobal.com"; 
@@ -615,9 +707,7 @@
             // --- 2. 链接拦截系统 ---
             let targetLink = "";
             document.addEventListener('click', function(e) {
-                // 排除答题按钮、承诺书按钮、弹窗按钮
                 if(e.target.classList.contains('quiz-btn') || e.target.closest('#voice') || e.target.tagName !== 'A' && !e.target.closest('a')) return;
-                
                 const link = e.target.closest('a');
                 if(link && link.href.startsWith('http') && !link.href.includes(window.location.host)) {
                     e.preventDefault();
@@ -628,13 +718,19 @@
             });
             function confirmJump() { window.open(targetLink, '_blank'); document.getElementById('linkModal').style.display = 'none'; }
 
-            // --- 3. 每日一测逻辑 (完美修复版：自动跳转+通关) ---
+            // --- 3. 每日一测逻辑 (已扩充为10题) ---
             const questions = [
                 {q: "科学发展观的第一要义是？", opts: ["A. 全面协调可持续", "B. 发展", "C. 统筹兼顾"], a: 1},
                 {q: "网络强国战略指出，没有____就没有国家安全？", opts: ["A. 网络安全", "B. 信息化", "C. 技术进步"], a: 0},
                 {q: "构建网络空间命运共同体，应坚持什么原则？", opts: ["A. 尊重网络主权", "B. 霸权主义", "C. 单边主义"], a: 0},
                 {q: "遇到网络谣言，正确的做法是？", opts: ["A. 立即转发", "B. 辱骂发布者", "C. 举报并等待辟谣"], a: 2},
-                {q: "社会主义核心价值观在社会层面的要求是？", opts: ["A. 富强民主文明和谐", "B. 自由平等公正法治", "C. 爱国敬业诚信友善"], a: 1}
+                {q: "社会主义核心价值观在社会层面的要求是？", opts: ["A. 富强民主文明和谐", "B. 自由平等公正法治", "C. 爱国敬业诚信友善"], a: 1},
+                // 新增题目 6-10
+                {q: "科学发展观的核心是？", opts: ["A. 以人为本", "B. 经济建设", "C. 改革开放"], a: 0},
+                {q: "科学发展观的基本要求是？", opts: ["A. 全面协调可持续", "B. 统筹兼顾", "C. 发展"], a: 0},
+                {q: "《网络安全法》规定，网络运营者应当加强对其用户发布的信息的管理，发现法律、行政法规禁止发布或者传输的信息的，应当立即停止传输该信息，采取消除等处置措施，防止信息扩散，保存有关记录，并向有关主管部门报告。", opts: ["A. 正确", "B. 错误"], a: 0},
+                {q: "文明上网，要求我们做到？", opts: ["A. 诚实友好交流", "B. 随意发布言论", "C. 盲目跟风"], a: 0},
+                {q: "防范网络诈骗，最重要的原则是？", opts: ["A. 不轻信，不转账", "B. 贪小便宜", "C. 点击不明链接"], a: 0}
             ];
             let qIndex = 0;
 
@@ -658,11 +754,7 @@
                 all.forEach(b => b.disabled = true);
                 if(choice === correct) {
                     btn.style.background = "#d4edda"; btn.style.borderColor = "#28a745"; btn.style.color = "#155724";
-                    // 1秒后自动跳转下一题
-                    setTimeout(() => { 
-                        qIndex++; 
-                        renderQuiz(); 
-                    }, 1000);
+                    setTimeout(() => { qIndex++; renderQuiz(); }, 1000);
                 } else {
                     btn.style.background = "#f8d7da"; btn.style.borderColor = "#dc3545"; btn.style.color = "#721c24";
                     setTimeout(() => {
@@ -673,7 +765,7 @@
                 }
             }
 
-            // --- 4. 评论区 (LeanCloud) ---
+            // --- 4. 评论区 ---
             function loadComments() {
                 const wall = document.getElementById('commentList');
                 const query = new AV.Query('RedComments');
@@ -768,20 +860,20 @@
                 // 统计数据
                 let v = 2024; setInterval(()=>{ v++; document.getElementById('visitCount').innerText=v; }, 5000);
 
-                // 图表 (修复ID和配色)
+                // 图表
                 new Chart(document.getElementById('chart-pie'), {
                     type: 'doughnut',
-                    data: { labels: ['谣言', '网暴', '诈骗', '其他'], datasets: [{ data: [40, 25, 20, 15], backgroundColor: ['#b71c1c', '#f57f17', '#1976D2', '#7f8c8d'] }] },
+                    data: { labels: ['谣言', '网暴', '诈骗', '其他'], datasets: [{ data: [142, 89, 76, 48], backgroundColor: ['#b71c1c', '#f57f17', '#1976D2', '#7f8c8d'] }] },
                     options: { responsive: true, maintainAspectRatio: false }
                 });
                 new Chart(document.getElementById('chart-bar'), {
                     type: 'bar',
-                    data: { labels: ['大一', '大二', '大三', '大四'], datasets: [{ label: '参与人数', data: [120, 150, 100, 80], backgroundColor: '#b71c1c' }] },
+                    data: { labels: ['大一', '大二', '大三', '大四'], datasets: [{ label: '参与人数', data: [115, 98, 82, 60], backgroundColor: '#b71c1c' }] },
                     options: { responsive: true, maintainAspectRatio: false }
                 });
 
                 // 启动逻辑
-                renderQuiz(); // 立即渲染第一题
+                renderQuiz(); 
                 loadComments();
                 if(localStorage.getItem('xz_signed')) {
                     document.getElementById('seal').classList.add('active');
