@@ -3,884 +3,1014 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>红心铸魂E空间 - 沉浸式网络文明共建平台</title>
+    <title>知行清朗 E-SPACE - 沉浸式网络文明共建平台 | 3.0 旗舰版</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
-        /* --- 1. 设计系统 (Design System) --- */
+        /* --- 1. 高级设计系统 (Design System 3.0) --- */
         :root {
-            --primary: #b71c1c; /* 党的深红 */
-            --primary-dark: #8E0E00;
-            --accent: #ffc107; /* 荣耀金 */
-            --text-dark: #2c3e50;
-            --text-gray: #546e7a;
-            --bg-body: #f8f9fa;
-            --glass-white: rgba(255, 255, 255, 0.92);
-            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.1);
-            --shadow-sm: 0 5px 15px rgba(0, 0, 0, 0.05);
+            --primary: #800000; /* 知行红 */
+            --primary-light: #a52a2a;
+            --gold: #d4af37; /* 香槟金 */
+            --gold-light: #f3e5ab;
+            --text-main: #1a1a1a;
+            --text-sub: #555555;
+            --bg-glass: rgba(255, 255, 255, 0.9);
+            --shadow-float: 0 15px 35px -5px rgba(128, 0, 0, 0.1);
+            --border-glass: 1px solid rgba(255, 255, 255, 0.8);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; }
-        body { background-color: var(--bg-body); color: var(--text-dark); overflow-x: hidden; }
+        /* 引入衬线体增强文化感 */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        /* 滚动条美化 */
+        body { 
+            background-color: #f9f7f2; 
+            background-image: url("https://www.transparenttextures.com/patterns/clean-gray-paper.png");
+            color: var(--text-main); 
+            font-family: "Noto Sans SC", sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        h1, h2, h3, h4 { font-family: "Noto Serif SC", serif; }
+
+        /* 滚动条 */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
 
-        /* --- 2. 头部 Hero Section (高级视差背景) --- */
-        .header {
-            position: relative; height: 92vh; 
-            background: linear-gradient(135deg, rgba(142, 14, 0, 0.85), rgba(31, 28, 24, 0.9)),
-                        url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop'); 
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed; /* 视差效果 */
-            color: white; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            clip-path: polygon(0 0, 100% 0, 100% 90%, 50% 100%, 0 90%);
-            margin-bottom: 60px; overflow: hidden;
-        }
-        
-        #particleCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.3; }
+        /* 动画类 */
+        .fade-in-up { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1); }
+        .fade-in-up.visible { opacity: 1; transform: translateY(0); }
 
-        .header-content { z-index: 2; text-align: center; animation: fadeInUp 1s ease; }
-        .logo-main { 
-            font-size: 5.5rem; font-weight: 900; margin-bottom: 15px; letter-spacing: 8px;
-            background: linear-gradient(to bottom, #fff 30%, var(--accent) 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
+        /* --- 2. 导航栏 --- */
+        .nav-container {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+            transition: 0.4s ease; padding: 20px 0;
         }
-        .subtitle { font-size: 1.6rem; opacity: 0.95; font-weight: 300; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 50px; }
+        .nav-container.scrolled { padding: 12px 0; background: rgba(255, 255, 255, 0.98); box-shadow: 0 5px 20px rgba(0,0,0,0.08); }
         
-        .btn-hero {
-            padding: 18px 50px; border: 1px solid rgba(255,255,255,0.3); color: var(--accent);
-            background: rgba(0,0,0,0.4); font-size: 1.2rem; font-weight: bold; border-radius: 50px;
-            cursor: pointer; transition: 0.4s; text-decoration: none; display: inline-block;
-            backdrop-filter: blur(5px); letter-spacing: 2px;
+        .nav-inner {
+            max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 25px;
         }
-        .btn-hero:hover { background: var(--accent); color: #8E0E00; box-shadow: 0 0 30px rgba(255, 193, 7, 0.4); border-color: var(--accent); }
-
-        /* --- 3. 导航栏 (悬浮玻璃) --- */
-        .nav {
-            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 1100px; 
-            background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(15px);
-            padding: 15px 40px; border-radius: 50px;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); z-index: 1000;
-            border: 1px solid rgba(255,255,255,0.5); transition: 0.3s;
+        .nav-brand { 
+            font-size: 1.6rem; font-weight: 900; color: var(--primary); 
+            display: flex; align-items: center; gap: 12px; letter-spacing: 1px;
         }
-        .nav-brand { font-weight: 800; color: var(--primary); font-size: 1.3rem; display: flex; align-items: center; gap: 8px; letter-spacing: 1px; }
-        .nav-links a { text-decoration: none; color: var(--text-dark); margin-left: 20px; font-weight: 600; transition: 0.3s; font-size: 0.95rem; position: relative; }
+        .nav-links { display: flex; gap: 35px; }
+        .nav-links a { 
+            text-decoration: none; color: var(--text-main); font-weight: 500; font-size: 0.95rem; transition: 0.3s; position: relative;
+        }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: -5px; left: 50%; width: 0; height: 2px; background: var(--primary); transition: 0.3s; transform: translateX(-50%);
+        }
         .nav-links a:hover { color: var(--primary); }
-        .nav-links a::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 0%; height: 2px; background: var(--primary); transition: 0.3s; }
         .nav-links a:hover::after { width: 100%; }
 
-        /* --- 4. 通用容器 & 区块背景 --- */
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        .section { padding: 80px 0; position: relative; }
+        /* --- 3. Hero Header --- */
+        .hero {
+            position: relative; height: 100vh; overflow: hidden;
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            color: white;
+        }
+        .hero-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1457369804613-52c61a468e7d?q=80&w=2670&auto=format&fit=crop');
+            background-size: cover; background-position: center;
+            z-index: -2; transform: scale(1.05); transition: transform 0.2s linear;
+        }
+        .hero-content { max-width: 900px; padding: 0 20px; z-index: 2; }
         
-        /* 背景装饰 */
-        #data {
-            background: linear-gradient(to bottom, rgba(255,255,255,0.95), rgba(255,255,255,0.9)),
-                        url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000&auto=format&fit=crop');
-            background-attachment: fixed; background-size: cover;
+        .badge-pill {
+            display: inline-flex; align-items: center; gap: 8px; padding: 8px 24px; 
+            border: 1px solid rgba(255,255,255,0.4); border-radius: 50px; 
+            background: rgba(0,0,0,0.25); backdrop-filter: blur(8px);
+            font-size: 0.95rem; margin-bottom: 25px; letter-spacing: 2px; color: var(--gold-light);
         }
-        #voice {
-            background-color: #fff5f5;
-            background-image: radial-gradient(var(--primary-dark) 0.5px, transparent 0.5px);
-            background-size: 20px 20px; opacity: 0.95;
-        }
-
-        .section-title { text-align: center; margin-bottom: 60px; }
-        .section-title h2 { 
-            font-size: 2.5rem; color: var(--primary); display: inline-block; position: relative; 
-            margin-bottom: 10px; font-weight: 800;
-        }
-        .section-title h2::after {
-            content: ''; display: block; width: 60px; height: 4px; background: var(--accent);
-            margin: 10px auto 0; border-radius: 2px;
-        }
-
-        /* --- 5. 统计卡片 (悬浮) --- */
-        .stats-grid { 
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; 
-            margin-top: -100px; position: relative; z-index: 10; 
-        }
-        .stat-card {
-            background: var(--glass-white); padding: 40px 20px; border-radius: 20px; text-align: center;
-            box-shadow: var(--shadow-lg); transition: 0.4s; border-bottom: 5px solid var(--primary);
-            backdrop-filter: blur(10px);
-        }
-        .stat-card:hover { transform: translateY(-15px); }
-        .stat-num { font-size: 3rem; font-weight: 900; color: var(--primary); margin-bottom: 5px; font-family: 'Arial Black'; }
-        .stat-label { font-size: 0.9rem; color: var(--text-gray); text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
-
-        /* --- 简介 --- */
-        .intro-box { 
-            background: white; padding: 50px; border-radius: 20px; 
-            border-left: 10px solid var(--primary); box-shadow: var(--shadow-sm); 
-            font-size: 1.1rem; line-height: 2; text-align: justify; color: #444;
-        }
-
-        /* --- 理论框架 --- */
-        .framework-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
-        .framework-card { 
-            background: white; padding: 40px 30px; border-radius: 20px; text-align: center; transition: 0.4s; 
-            border: 1px solid #eee; position: relative; overflow: hidden;
-        }
-        .framework-card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px;
-            background: linear-gradient(90deg, var(--primary), var(--accent)); transform: scaleX(0); transition: 0.4s;
-        }
-        .framework-card:hover { transform: translateY(-10px); box-shadow: var(--shadow-lg); }
-        .framework-card:hover::before { transform: scaleX(1); }
         
-        .icon-circle { 
-            width: 80px; height: 80px; background: linear-gradient(135deg, var(--primary), #d32f2f); 
-            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-            margin: 0 auto 25px; color: white; font-size: 2rem; box-shadow: 0 10px 20px rgba(183, 28, 28, 0.3); 
+        .main-title {
+            font-size: 5.5rem; font-weight: 900; margin-bottom: 15px; letter-spacing: 8px;
+            background: linear-gradient(180deg, #fff 20%, #e0e0e0 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
         }
-        .framework-card h3 { color: var(--text-dark); margin-bottom: 15px; font-size: 1.4rem; }
-        .framework-card p { color: var(--text-gray); font-size: 1rem; line-height: 1.6; }
-
-        /* --- 理论实践 --- */
-        .impl-list { display: flex; flex-direction: column; gap: 20px; }
-        .impl-item { 
-            background: white; padding: 30px; border-radius: 15px; display: grid; 
-            grid-template-columns: 220px 1fr; gap: 30px; border-left: 5px solid var(--accent); 
-            box-shadow: var(--shadow-sm); align-items: center; transition: 0.3s;
-        }
-        .impl-item:hover { transform: translateX(10px); box-shadow: var(--shadow-lg); }
-        .impl-title { font-size: 1.3rem; font-weight: bold; color: var(--primary); display: flex; align-items: center; gap: 10px; }
-        .impl-details { font-size: 1rem; color: #555; line-height: 1.8; }
-        .impl-tag { background: #fff3e0; color: #e65100; padding: 3px 10px; border-radius: 4px; font-size: 0.85rem; font-weight: bold; margin-right: 8px; }
-
-        /* --- 理论答题 --- */
-        .theory-layout { display: grid; grid-template-columns: 1.5fr 1fr; gap: 40px; }
-        .quiz-card { 
-            background: white; padding: 40px; border-radius: 20px; 
-            box-shadow: var(--shadow-lg); border: 1px solid rgba(0,0,0,0.05); min-height: 350px; 
-            display: flex; flex-direction: column; justify-content: center;
-        }
-        .quiz-btn {
-            display: block; width: 100%; padding: 18px; margin: 10px 0; border: 2px solid #f0f0f0;
-            background: white; border-radius: 12px; cursor: pointer; transition: 0.2s; text-align: left;
-            font-size: 1.05rem; color: #555; font-weight: 500;
-        }
-        .quiz-btn:hover { border-color: var(--primary); background: #fffbfb; color: var(--primary); transform: translateX(5px); }
         
-        /* --- 数据洞察 --- */
-        .data-card { background: var(--glass-white); padding: 50px; border-radius: 25px; box-shadow: var(--shadow-lg); backdrop-filter: blur(10px); }
-        .survey-action { 
-            text-align: center; background: linear-gradient(135deg, #fff3e0, #fff); 
-            padding: 40px; border-radius: 20px; border: 2px dashed var(--accent); margin-bottom: 50px; 
+        .sub-title { font-size: 1.6rem; font-weight: 300; opacity: 0.95; margin-bottom: 50px; font-style: italic; letter-spacing: 2px; }
+        
+        .btn-glow {
+            padding: 16px 48px; background: linear-gradient(135deg, var(--primary), #4a0000);
+            color: white; border: none; border-radius: 50px; font-size: 1.15rem; cursor: pointer;
+            transition: 0.3s; box-shadow: 0 10px 30px rgba(128, 0, 0, 0.4); text-decoration: none; display: inline-block;
         }
-        .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; }
-        .chart-box { height: 350px; position: relative; background: white; padding: 20px; border-radius: 15px; box-shadow: var(--shadow-sm); }
+        .btn-glow:hover { transform: translateY(-4px); box-shadow: 0 15px 40px rgba(128, 0, 0, 0.6); }
 
-        /* --- 承诺书 --- */
-        .pledge-paper {
-            background: url("https://www.transparenttextures.com/patterns/cream-paper.png"), #fffdf5;
-            padding: 80px; border-radius: 8px; border: 12px double var(--primary); 
-            max-width: 900px; margin: 0 auto; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.1);
+        /* --- 4. 统计栏 --- */
+        .stats-bar {
+            background: white; max-width: 1100px; margin: -70px auto 0;
+            border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            padding: 40px; position: relative; z-index: 10; border-bottom: 4px solid var(--gold);
         }
-        .pledge-title { font-family: "楷体"; font-size: 2.5rem; color: var(--primary-dark); margin-bottom: 40px; font-weight: bold; }
-        .pledge-content { font-size: 1.3rem; line-height: 2.2; font-family: "楷体"; text-align: left; padding: 0 60px; color: #333; }
-        .seal-mark {
-            width: 160px; height: 160px; border: 5px solid var(--primary); border-radius: 50%;
-            position: absolute; bottom: 50px; right: 50px; color: var(--primary);
-            display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.5rem;
-            transform: rotate(-20deg) scale(2); opacity: 0; transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            pointer-events: none; text-shadow: 0 0 2px var(--primary);
-            box-shadow: inset 0 0 20px rgba(183, 28, 28, 0.2);
-        }
-        .seal-mark.active { opacity: 0.9; transform: rotate(-20deg) scale(1); }
+        .stat-item { text-align: center; border-right: 1px solid #eee; position: relative; }
+        .stat-item:last-child { border-right: none; }
+        .stat-num { font-size: 2.8rem; font-weight: 700; color: var(--primary); display: block; margin-bottom: 8px; font-family: 'Arial Black'; }
+        .stat-desc { color: var(--text-sub); font-size: 0.95rem; letter-spacing: 1px; font-weight: 500; }
 
-        /* --- 留言墙 --- */
-        .message-wall {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px;
-            max-height: 650px; overflow-y: auto; padding: 25px; background: white; border-radius: 20px;
-            border: 1px solid #eee; margin-top: 40px; box-shadow: inset 0 0 20px rgba(0,0,0,0.02);
-        }
-        .message-card {
-            background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-            animation: zoomIn 0.5s ease; border-left: 4px solid var(--accent); display: flex; flex-direction: column;
-            transition: 0.3s;
-        }
-        .message-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .message-header { display: flex; align-items: center; margin-bottom: 15px; }
-        .message-avatar {
-            width: 40px; height: 40px; background: var(--primary); color: white; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 12px;
-            font-size: 1.1rem;
-        }
-        .message-name { font-weight: bold; color: var(--text-dark); font-size: 1rem; }
-        .message-time { font-size: 0.75rem; color: #aaa; margin-left: auto; }
-        .message-body { color: #555; font-size: 1rem; line-height: 1.6; word-break: break-all; }
+        /* --- 5. 通用容器 --- */
+        .container { max-width: 1200px; margin: 0 auto; padding: 100px 25px; }
+        .section-header { text-align: center; margin-bottom: 80px; }
+        .section-tag { color: var(--primary); font-weight: bold; letter-spacing: 3px; font-size: 0.85rem; text-transform: uppercase; display: block; margin-bottom: 12px; }
+        .section-title { font-size: 2.8rem; color: var(--text-main); margin-bottom: 20px; position: relative; display: inline-block; }
+        .section-title::after { content: ''; display: block; width: 80px; height: 4px; background: var(--gold); margin: 20px auto 0; border-radius: 2px; }
 
-        .input-area {
-            background: white; padding: 35px; border-radius: 20px; box-shadow: var(--shadow-lg);
-            display: flex; gap: 20px; align-items: flex-start;
-        }
-        textarea {
-            flex: 1; padding: 15px; border: 2px solid #eee; border-radius: 12px; font-size: 1rem;
-            resize: none; transition: 0.3s; min-height: 80px;
-        }
-        textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(183, 28, 28, 0.1); }
-
-        /* --- 光影画廊 (6张图) --- */
-        .gallery-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px;
-        }
-        .gallery-item {
-            position: relative; border-radius: 15px; overflow: hidden; height: 260px;
-            box-shadow: var(--shadow-sm); cursor: pointer;
-        }
-        .gallery-img {
-            width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .gallery-item:hover .gallery-img { transform: scale(1.15); }
-        .gallery-overlay {
-            position: absolute; bottom: 0; left: 0; width: 100%; padding: 25px;
-            background: linear-gradient(to top, rgba(183, 28, 28, 0.9), transparent);
-            color: white; opacity: 0; transform: translateY(20px); transition: 0.4s ease;
-        }
-        .gallery-item:hover .gallery-overlay { opacity: 1; transform: translateY(0); }
-        .gallery-title { font-weight: bold; font-size: 1.2rem; margin-bottom: 5px; color: var(--accent); }
-        .gallery-desc { font-size: 0.9rem; opacity: 0.9; }
-
-        /* --- 资源库 --- */
+        /* --- 6. 学习资源库 --- */
+        .resource-section { background: white; padding: 80px 0; margin-top: 50px; }
         .resource-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
         .resource-card {
-            background: white; padding: 40px 30px; border-radius: 20px; text-align: center;
-            border: 1px solid #eee; transition: 0.3s; position: relative; overflow: hidden;
+            background: #fff; border: 1px solid #eee; border-radius: 16px; padding: 35px;
+            transition: 0.4s; position: relative; overflow: hidden;
+            display: flex; flex-direction: column; justify-content: space-between;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
         }
-        .resource-card::after {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: #eee; transition: 0.3s;
+        .resource-card:hover { transform: translateY(-10px); box-shadow: var(--shadow-float); border-color: var(--gold-light); }
+        .res-icon { 
+            width: 60px; height: 60px; background: #fefcf5; border-radius: 12px; 
+            display: flex; align-items: center; justify-content: center; color: var(--primary);
+            font-size: 1.8rem; margin-bottom: 25px; border: 1px solid var(--gold-light);
         }
-        .resource-card:hover { transform: translateY(-10px); box-shadow: var(--shadow-lg); }
-        .resource-card:hover::after { background: var(--primary); }
-
-        /* 按钮与表单 */
-        .btn {
-            background: var(--primary); color: white; padding: 12px 35px; border: none; border-radius: 30px;
-            font-size: 1.05rem; font-weight: bold; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
-            box-shadow: 0 5px 15px rgba(183, 28, 28, 0.3);
+        .res-type { font-size: 0.8rem; color: var(--gold); font-weight: bold; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+        .res-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; color: #222; }
+        .res-desc { font-size: 0.9rem; color: #666; line-height: 1.6; margin-bottom: 25px; flex-grow: 1; }
+        .res-btn {
+            padding: 10px 0; text-align: center; border: 1px solid #ddd; border-radius: 8px;
+            color: #555; text-decoration: none; font-size: 0.9rem; transition: 0.3s; font-weight: 500;
         }
-        .btn:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(183, 28, 28, 0.4); }
-        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); box-shadow: none; }
-        .btn-outline:hover { background: var(--primary); color: white; }
-        
-        .input-group { display: flex; gap: 15px; justify-content: center; margin-top: 40px; }
-        input { padding: 15px; border: 2px solid #ddd; border-radius: 8px; width: 250px; transition: 0.3s; font-size: 1rem; }
-        input:focus { border-color: var(--primary); outline: none; }
+        .res-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+        .res-badge { position: absolute; top: 20px; right: 20px; font-size: 0.8rem; color: #999; }
 
-        /* 弹窗 */
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 3000; backdrop-filter: blur(8px); }
-        .modal-content { background: white; padding: 40px; border-radius: 25px; width: 90%; max-width: 450px; text-align: center; animation: zoomIn 0.3s; border-top: 6px solid var(--primary); box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
-        
-        /* 图片预览弹窗 */
-        #imgModal .modal-content { max-width: 900px; background: transparent; box-shadow: none; border: none; padding: 0; }
-        #imgModal img { width: 100%; border-radius: 15px; box-shadow: 0 20px 60px rgba(0,0,0,0.6); border: 4px solid white; }
+        /* --- 7. 发展脉络 --- */
+        .timeline-container { position: relative; padding: 40px 0; }
+        .timeline-line { position: absolute; left: 50%; top: 0; bottom: 0; width: 3px; background: #eee; transform: translateX(-50%); }
+        .timeline-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 70px; position: relative; }
+        .timeline-item:nth-child(even) { flex-direction: row-reverse; }
+        .timeline-dot {
+            width: 24px; height: 24px; background: var(--primary); border: 5px solid #fff; border-radius: 50%;
+            position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 2; box-shadow: 0 0 0 4px rgba(128, 0, 0, 0.1);
+        }
+        .timeline-content { width: 44%; background: white; padding: 35px; border-radius: 16px; box-shadow: var(--shadow-float); position: relative; border-left: 4px solid var(--gold); }
+        .timeline-content h4 { font-size: 1.4rem; color: var(--primary); margin-bottom: 10px; }
+        .year-tag { background: #fdf6e3; color: #8a6d3b; padding: 5px 12px; border-radius: 6px; font-weight: bold; font-size: 0.9rem; margin-bottom: 15px; display: inline-block; }
 
-        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @media (max-width: 768px) { 
-            .header { height: 60vh; } .logo-main { font-size: 3rem; } 
-            .stats-grid, .theory-layout, .chart-grid, .resource-grid, .framework-grid, .impl-item, .gallery-grid { grid-template-columns: 1fr; } 
-            .nav-links { display: none; } 
-            .pledge-content { padding: 0 20px; }
+        /* --- 8. 理论学习 --- */
+        .learning-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 50px; }
+        .quote-box {
+            background: linear-gradient(135deg, var(--primary), #5a0b0b); color: white;
+            padding: 60px; border-radius: 20px; text-align: center; position: relative;
+            box-shadow: 0 20px 40px rgba(128, 0, 0, 0.3);
+            display: flex; flex-direction: column; justify-content: center;
+        }
+        .quote-text { font-size: 1.6rem; font-family: "Noto Serif SC"; font-style: italic; line-height: 1.7; margin-bottom: 30px; }
+        .quiz-container { background: white; border-radius: 20px; padding: 40px; box-shadow: var(--shadow-float); border-top: 5px solid var(--primary); }
+        .quiz-opt {
+            display: block; width: 100%; padding: 15px 20px; margin-bottom: 12px;
+            border: 2px solid #f5f5f5; border-radius: 12px; background: white;
+            text-align: left; cursor: pointer; transition: 0.2s; color: var(--text-sub); font-size: 1rem;
+        }
+        .quiz-opt:hover { border-color: var(--primary); color: var(--primary); background: #fffbfb; }
+        .quiz-opt.disabled { pointer-events: none; opacity: 0.7; }
+        .quiz-opt.correct { background: #e8f5e9; border-color: #4caf50; color: #2e7d32; }
+        .quiz-opt.wrong { background: #ffebee; border-color: #ef5350; color: #c62828; }
+
+        /* --- 9. 数据 & 问卷 Banner --- */
+        .survey-banner {
+            background: linear-gradient(135deg, #fff3e0, #fff); border: 2px dashed var(--gold);
+            border-radius: 20px; padding: 40px; text-align: center; margin-bottom: 50px;
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.1);
         }
 
-        /* --- 艺术级页脚 (Artistic Footer) --- */
-        .footer-artistic {
+        /* --- 10. 文明契约 (Paper) --- */
+        .pledge-bg {
+            background: url("https://www.transparenttextures.com/patterns/cream-paper.png"), #fffdf5;
+            padding: 90px 70px; border-radius: 12px; max-width: 960px; margin: 0 auto;
+            box-shadow: 0 30px 70px rgba(0,0,0,0.12); border: 12px double #e0dacc;
             position: relative;
-            background: linear-gradient(to bottom, #8E0E00, #1a0505);
-            color: rgba(255, 255, 255, 0.8);
-            padding: 80px 0 50px;
-            margin-top: 100px;
-            text-align: center;
-            overflow: hidden;
-            /* 顶部波浪切割 */
-            clip-path: polygon(0 15%, 100% 0, 100% 100%, 0% 100%);
         }
-        /* 底部光晕 */
-        .footer-artistic::before {
-            content: ''; position: absolute; bottom: -50%; left: 50%; transform: translateX(-50%);
-            width: 80%; height: 80%;
-            background: radial-gradient(circle, rgba(255, 193, 7, 0.15), transparent 70%);
-            pointer-events: none;
+        .pledge-text p { font-size: 1.25rem; line-height: 2.2; margin-bottom: 15px; color: #333; }
+        .seal-anim {
+            width: 160px; height: 160px; border: 5px solid var(--primary); border-radius: 50%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            color: var(--primary); font-weight: 900; font-size: 1.6rem; line-height: 1.2;
+            transform: rotate(-25deg) scale(2); opacity: 0;
+            transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); pointer-events: none;
+            position: absolute; bottom: 50px; right: 80px; box-shadow: inset 0 0 20px rgba(128,0,0,0.1);
         }
+        .seal-anim.stamped { transform: rotate(-25deg) scale(1); opacity: 0.85; }
 
-        .footer-title {
-            font-size: 2.2rem;
-            font-weight: 900;
-            margin-bottom: 10px;
-            letter-spacing: 2px;
-            background: linear-gradient(to right, #fff, #ffc107);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .footer-info {
-            font-size: 1.1rem;
-            margin-bottom: 40px;
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        /* 成员卡片容器 */
-        .team-container {
-            display: flex;
-            justify-content: center;
+        /* --- 11. 留言墙与页脚 --- */
+        .comment-wall { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+        .comment-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.04); border-top: 3px solid var(--primary); }
+        
+        /* --- 12. 画廊网格 (修正版 - 2x2 布局) --- */
+        .gallery-masonry { 
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 强制2列 */
             gap: 25px;
-            flex-wrap: wrap;
-            margin-bottom: 50px;
         }
-
-        /* 成员卡片 */
-        .team-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-size: 1rem;
-            color: #fff;
-            transition: all 0.3s ease;
-            cursor: default;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .gallery-item { 
+            height: 320px; /* 固定高度，确保整齐 */
+            margin-bottom: 0;
+            position: relative; 
+            border-radius: 15px; 
+            overflow: hidden; 
+            cursor: zoom-in; 
+            box-shadow: var(--shadow-float);
         }
-
-        .team-card i { color: var(--accent); }
-
-        .team-card:hover {
-            background: rgba(255, 193, 7, 0.2);
-            border-color: var(--accent);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        .gallery-item img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; /* 裁剪适应 */
+            display: block; 
+            transition: 0.5s; 
         }
-
-        .back-to-top {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: rgba(255, 255, 255, 0.6);
-            padding: 10px 25px;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: 0.3s;
+        .gallery-item:hover img { transform: scale(1.1); filter: brightness(0.8); }
+        .gallery-info {
+            position: absolute; bottom: 0; left: 0; width: 100%; padding: 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: white; opacity: 0; transform: translateY(20px); transition: 0.3s;
         }
-        .back-to-top:hover {
-            background: white;
-            color: #8E0E00;
+        .gallery-item:hover .gallery-info { opacity: 1; transform: translateY(0); }
+
+        footer {
+            background: #111; color: rgba(255,255,255,0.7); padding: 100px 0 40px;
+            text-align: center; margin-top: 80px;
+        }
+        .footer-logo { font-size: 2.2rem; color: white; font-weight: 900; margin-bottom: 25px; letter-spacing: 3px; }
+        
+        .input-stylish { padding: 14px 25px; border: 2px solid #e0e0e0; border-radius: 50px; outline: none; transition: 0.3s; width: 280px; font-size: 1rem; }
+        .input-stylish:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(128, 0, 0, 0.1); }
+
+        .chart-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; margin-top: 40px; }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .hero { height: auto; padding: 150px 0 100px; }
+            .main-title { font-size: 3rem; }
+            .stats-bar { grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 0; }
+            .resource-grid, .learning-grid, .chart-wrapper, .timeline-item { grid-template-columns: 1fr; flex-direction: column !important; }
+            .gallery-masonry { grid-template-columns: 1fr; } /* 手机端单列 */
+            .gallery-item { height: 250px; }
+            .timeline-content { width: 100%; margin-top: 20px; }
+            .nav-links { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <nav class="nav">
-        <div class="nav-brand"><i class="fas fa-star"></i> 红心铸魂 E-SPACE</div>
-        <div class="nav-links">
-            <a href="#intro">平台简介</a>
-            <a href="#framework">理论框架</a>
-            <a href="#data">数字洞察</a>
-            <a href="#pledge">文明契约</a>
-            <a href="#voice">留言墙</a>
-            <a href="#gallery">共建风采</a>
+    <nav class="nav-container" id="navbar">
+        <div class="nav-inner">
+            <div class="nav-brand"><i class="fas fa-balance-scale"></i> 知行清朗 E-SPACE</div>
+            <div class="nav-links">
+                <a href="#intro">平台理念</a>
+                <a href="#timeline">发展脉络</a>
+                <a href="#resources">学习资源库</a>
+                <a href="#learning">理论自测</a>
+                <a href="#data">数字洞察</a>
+                <a href="#pledge">文明契约</a>
+            </div>
         </div>
     </nav>
 
-    <header class="header">
-        <canvas id="particleCanvas"></canvas>
-        <div class="header-content">
-            <h1 class="logo-main">行知清朗</h1>
-            <p class="subtitle">科学发展观引领 · 沉浸式网络文明共建平台</p>
-            <a href="#pledge" class="btn-hero">立即加入行动</a>
+    <header class="hero">
+        <div class="hero-bg" id="parallaxBg"></div>
+        <div class="hero-content fade-in-up">
+            <span class="badge-pill"><i class="fas fa-university"></i> 科学发展观 · 知行合一</span>
+            <h1 class="main-title">知行清朗</h1>
+            <p class="sub-title">"知是行之始，行是知之成，共建网络文明新生态"</p>
+            <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                <a href="#pledge" class="btn-glow">加入文明行动</a>
+                <a href="#resources" class="btn-glow" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); box-shadow: none;">
+                    浏览资源库 <i class="fas fa-arrow-right" style="font-size: 0.9rem;"></i>
+                </a>
+            </div>
         </div>
     </header>
 
-    <div class="container">
-        <div class="stats-grid">
-            <div class="stat-card"><div class="stat-num" id="visitCount">2024</div><p class="stat-label">累计访问人次</p></div>
-            <div class="stat-card"><div class="stat-num" id="pledgeCount">520</div><p class="stat-label">签署文明承诺</p></div>
-            <div class="stat-card"><div class="stat-num">152</div><p class="stat-label">有效问卷样本</p></div>
-            <div class="stat-card"><div class="stat-num">100%</div><p class="stat-label">全员覆盖</p></div>
-        </div>
-
-        <div class="section" id="intro">
-            <div class="section-title"><h2>平台简介</h2><p>Introduction</p></div>
-            <div class="intro-box">
-                <p>“红心铸魂E空间”是浙江师范大学行知学院《毛泽东思想和中国特色社会主义思想概论》课程实践项目。平台坚持以<strong>科学发展观</strong>为指导，深入贯彻落实网络强国重要思想，旨在通过“理论+技术+实践”的融合模式，构建科学、文明、和谐的校园网络生态，引导大学生树立正确的网络价值观，争做新时代网络文明的守护者。</p>
+    <div class="container" style="padding-top: 0;">
+        <div class="stats-bar fade-in-up">
+            <div class="stat-item">
+                <span class="stat-num counter" data-target="2024">0</span>
+                <span class="stat-desc">累计访问人次</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-num counter" data-target="865">0</span>
+                <span class="stat-desc">资源下载次数</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-num counter" data-target="520">0</span>
+                <span class="stat-desc">签署文明公约</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-num">100%</span>
+                <span class="stat-desc">校园网络覆盖</span>
             </div>
         </div>
+    </div>
 
-        <div class="section" id="framework">
-            <div class="section-title"><h2>我们的理论框架</h2><p>Theoretical Framework</p></div>
-            <div class="framework-grid">
-                <div class="framework-card">
-                    <div class="icon-circle"><i class="fas fa-book"></i></div>
-                    <h3>价值引领层</h3>
-                    <p>确立正确的网络价值观<br>坚持以人为本，弘扬正能量</p>
-                </div>
-                <div class="framework-card">
-                    <div class="icon-circle"><i class="fas fa-handshake"></i></div>
-                    <h3>关系协调层</h3>
-                    <p>构建和谐的网络社会关系<br>倡导理性交流，拒绝网络暴力</p>
-                </div>
-                <div class="framework-card">
-                    <div class="icon-circle"><i class="fas fa-balance-scale"></i></div>
-                    <h3>机制保障层</h3>
-                    <p>建立长效的运行保障机制<br>通过契约与技术规范行为</p>
-                </div>
-            </div>
+    <section id="intro" class="container fade-in-up">
+        <div class="section-header">
+            <span class="section-tag">Philosophy</span>
+            <h2 class="section-title">知行合一 · 理念阐释</h2>
+            <p style="max-width: 760px; margin: 0 auto; color: var(--text-sub); line-height: 1.8; font-size: 1.05rem;">
+                “知行清朗 E-SPACE”是基于<strong>科学发展观</strong>构建的校园网络文明实践平台。我们主张“以知促行，以行求知”，将网络强国理论学习（知）与日常网络行为规范（行）深度融合，引导大学生在实践中涵养网络文明素养。
+            </p>
         </div>
+    </section>
 
-        <div class="section">
-            <div class="section-title"><h2>理论在平台中的体现</h2><p>Implementation</p></div>
-            <div class="impl-list">
-                <div class="impl-item">
-                    <div class="impl-title"><i class="fas fa-graduation-cap" style="color:var(--primary)"></i> 理论学习模块</div>
-                    <div class="impl-details">
-                        <p><span class="impl-tag">对应理论</span> 价值引领层</p>
-                        <p><strong>设计理念：</strong>通过权威学习资源，帮助学生树立正确的网络价值观。</p>
-                        <p><strong>平台实现：</strong>链接学习强国、党员网，提供知识自测。</p>
-                    </div>
-                </div>
-                <div class="impl-item">
-                    <div class="impl-title"><i class="fas fa-file-signature" style="color:var(--primary)"></i> 文明契约模块</div>
-                    <div class="impl-details">
-                        <p><span class="impl-tag">对应理论</span> 机制保障层</p>
-                        <p><strong>设计理念：</strong>通过仪式化的承诺，建立行为约束机制。</p>
-                        <p><strong>平台实现：</strong>在线签署承诺书，生成专属电子证书。</p>
-                    </div>
-                </div>
-                <div class="impl-item">
-                    <div class="impl-title"><i class="fas fa-comments" style="color:var(--primary)"></i> 青年之声模块</div>
-                    <div class="impl-details">
-                        <p><span class="impl-tag">对应理论</span> 关系协调层</p>
-                        <p><strong>设计理念：</strong>提供理性交流空间，培养对话能力。</p>
-                        <p><strong>平台实现：</strong>实时互动留言墙，LeanCloud云端数据支持。</p>
-                    </div>
-                </div>
+    <section id="timeline" style="background: #fdfbf7; padding: 60px 0;">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">History</span>
+                <h2 class="section-title">网络文明发展脉络</h2>
             </div>
-        </div>
-
-        <div class="section" id="theory">
-            <div class="section-title"><h2>红色理论 · 思想领航</h2></div>
-            <div class="theory-layout">
-                <div>
-                    <p><strong>科学发展观</strong> 强调“以人为本”。在网络空间治理中，这意味着要尊重网民的主体地位，维护网民合法权益。我们倡导理性上网、文明发声，拒绝网络暴力，共同维护清朗的网络空间。</p>
-                    <div style="display: flex; gap: 15px; margin-top: 30px;">
-                        <a href="https://www.12371.cn/" class="btn btn-outline" target="_blank">共产党员网</a>
-                        <a href="https://www.xuexi.cn/" class="btn" target="_blank">学习强国</a>
+            <div class="timeline-container">
+                <div class="timeline-line"></div>
+                <div class="timeline-item fade-in-up">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="year-tag">2014年</span>
+                        <h4>网络强国战略提出</h4>
+                        <p style="color:#666; font-size:0.95rem;">中央网络安全和信息化领导小组成立，习近平总书记提出“没有网络安全就没有国家安全”。</p>
                     </div>
                 </div>
-                <div class="quiz-card" id="quiz-box">
-                    <div style="text-align: center; padding-top: 80px; color: #999;">
-                        <i class="fas fa-spinner fa-spin"></i> 正在加载题库...
+                <div class="timeline-item fade-in-up">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="year-tag">2016年</span>
+                        <h4>贯彻以人民为中心</h4>
+                        <p style="color:#666; font-size:0.95rem;">在网信工作座谈会上，强调网信事业要发展，必须贯彻以人民为中心的发展思想。</p>
+                    </div>
+                </div>
+                <div class="timeline-item fade-in-up">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="year-tag">2021年</span>
+                        <h4>加强网络文明建设</h4>
+                        <p style="color:#666; font-size:0.95rem;">中办、国办印发《关于加强网络文明建设的意见》，网络文明建设步入法治化、规范化新阶段。</p>
                     </div>
                 </div>
             </div>
         </div>
+    </section>
 
-        <section class="section" id="data">
-            <div class="container">
-                <div class="section-title">
-                    <h2>数字洞察 · 明镜之台</h2>
+    <section id="resources" class="resource-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Library</span>
+                <h2 class="section-title">学习资源库</h2>
+                <p style="color:#666;">精选政策法规与理论学习资料，赋能网络素养提升</p>
+            </div>
+            
+            <div class="resource-grid">
+                <div class="resource-card fade-in-up">
+                    <div class="res-badge"><i class="fas fa-file-pdf"></i> PDF</div>
+                    <div class="res-icon"><i class="fas fa-gavel"></i></div>
+                    <div>
+                        <div class="res-type">政策法规</div>
+                        <h3 class="res-title">中华人民共和国网络安全法</h3>
+                        <p class="res-desc">2016年11月7日通过，是我国网络安全领域的基础性法律，确立了网络运行安全、信息安全等基本制度。</p>
+                    </div>
+                    <a href="https://www.cac.gov.cn/2016-11/07/c_1119867116.htm" target="_blank" class="res-btn">阅读全文</a>
                 </div>
-                <div class="data-card">
-                    <div class="survey-action">
-                        <h3 style="color: var(--primary); margin-bottom: 15px; font-weight: 800;">您的声音很重要！</h3>
-                        <p style="color: #666; margin-bottom: 20px; font-size: 1.1rem;">为了更精准地了解校园网络现状，请填写实时调研问卷。</p>
-                        <a href="https://v.wjx.cn/vm/hLDRJXz.aspx#" class="btn" target="_blank">
-                            <i class="fas fa-edit"></i> 立即参与问卷调查
-                        </a>
+
+                <div class="resource-card fade-in-up" style="transition-delay: 0.1s;">
+                    <div class="res-badge"><i class="fas fa-book"></i> HTML</div>
+                    <div class="res-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div>
+                        <div class="res-type">理论专著</div>
+                        <h3 class="res-title">科学发展观</h3>
+                        <p class="res-desc">科学发展观，第一要义是发展，核心是以人为本，基本要求是全面协调可持续，根本方法是统筹兼顾。</p>
                     </div>
-                    
-                    <div class="chart-grid">
-                        <div class="chart-box">
-                            <h4 style="text-align: center; margin-bottom: 20px; color: var(--text-dark); font-weight: bold;">主要网络困扰分布</h4>
-                            <canvas id="chart-pie"></canvas>
-                        </div>
-                        <div class="chart-box">
-                            <h4 style="text-align: center; margin-bottom: 20px; color: var(--text-dark); font-weight: bold;">年级参与热度</h4>
-                            <canvas id="chart-bar"></canvas>
-                        </div>
+                    <a href="https://syss.12371.cn/2015/05/15/ARTI1431682503757995_all.shtml" target="_blank" class="res-btn">阅读全文</a>
+                </div>
+
+                <div class="resource-card fade-in-up" style="transition-delay: 0.2s;">
+                    <div class="res-badge"><i class="fas fa-video"></i> MP4</div>
+                    <div class="res-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div>
+                        <div class="res-type">实务指南</div>
+                        <h3 class="res-title">大学生网络防诈骗指南</h3>
+                        <p class="res-desc">汇总高校高发的电信诈骗案例（刷单、冒充客服等），提供实用的识诈防诈技巧与应急处理流程。</p>
                     </div>
+                    <a href="https://www.mps.gov.cn/n2253534/n2253543/c9257095/content.html" target="_blank" class="res-btn">观看微课</a>
+                </div>
+
+                <div class="resource-card fade-in-up">
+                    <div class="res-badge"><i class="fas fa-file-alt"></i> HTML</div>
+                    <div class="res-icon"><i class="fas fa-scroll"></i></div>
+                    <div>
+                        <div class="res-type">重要文件</div>
+                        <h3 class="res-title">关于加强网络文明建设的意见</h3>
+                        <p class="res-desc">中共中央办公厅、国务院办公厅印发，提出了加强网络空间思想引领、文化培育、道德建设的具体要求。</p>
+                    </div>
+                    <a href="https://www.gov.cn/xinwen/2021-09/14/content_5637195.htm" target="_blank" class="res-btn">访问平台</a>
+                </div>
+
+                <div class="resource-card fade-in-up" style="transition-delay: 0.1s;">
+                    <div class="res-badge"><i class="fas fa-graduation-cap"></i> LINK</div>
+                    <div class="res-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                    <div>
+                        <div class="res-type">重要文件</div>
+                        <h3 class="res-title">《高校思想政治工作质量提升工程实施纲要》</h3>
+                        <p class="res-desc">包含网络评论引导规范、突发舆情应对机制以及志愿者服务实操守则，系学生实践必备。</p>
+                    </div>
+                    <a href="https://mp.weixin.qq.com/s?__biz=MzA5ODUxMTExNw==&mid=2650952280&idx=2&sn=c4ae2d35d59be0984e90915230809221&chksm=8a0a42803a22f4a0ebeddb6877efdc3f7d007876af3c1d8b841a10d70cd7abc26c7a74cbc059&scene=27" class="res-btn">阅读全文</a>
+                </div>
+
+                <div class="resource-card fade-in-up" style="transition-delay: 0.2s;">
+                    <div class="res-badge"><i class="fas fa-link"></i> LINK</div>
+                    <div class="res-icon"><i class="fas fa-globe"></i></div>
+                    <div>
+                        <div class="res-type">外部链接</div>
+                        <h3 class="res-title">中国互联网联合辟谣平台</h3>
+                        <p class="res-desc">权威辟谣信息发布平台，提供实时谣言查证服务，帮助学生做到“不信谣、不传谣”。</p>
+                    </div>
+                    <a href="https://www.piyao.org.cn/" target="_blank" class="res-btn">访问平台</a>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="section" id="pledge">
-            <div class="container">
-                <div class="section-title"><h2>文明契约 · 郑重承诺</h2></div>
-                <div class="pledge-paper">
-                    <h2 class="pledge-title">新时代大学生网络文明公约</h2>
-                    <div class="pledge-content">
-                        <p>一、 依法上网，自觉维护国家安全和公共利益。</p>
-                        <p>二、 文明上网，传播正能量，抵制低俗信息。</p>
-                        <p>三、 理性上网，拒绝网络暴力，不信谣不传谣。</p>
-                        <p>四、 安全上网，提高防范意识，谨防网络诈骗。</p>
-                    </div>
-                    
-                    <div id="seal" class="seal-mark">行知<br>清朗</div>
-
-                    <div class="input-group" id="signForm">
-                        <input type="text" id="signerName" placeholder="请输入您的姓名" style="width: 250px;">
-                        <button class="btn" onclick="signPledge()">签署并生成证书</button>
-                    </div>
-                    <div id="downloadArea" style="display: none; margin-top: 30px;">
-                        <p style="color: green; margin-bottom: 15px; font-weight: bold;">🎉 签署成功！</p>
-                        <button class="btn btn-outline" onclick="generateCertificate()"><i class="fas fa-download"></i> 下载荣誉证书</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="section" id="voice">
-            <div class="container">
-                <div class="section-title"><h2>青年之声 · 留言墙</h2><p>Speak Up</p></div>
-                <div style="max-width: 900px; margin: 0 auto;">
-                    <div class="input-area">
-                        <div style="width: 60px; height: 60px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; flex-shrink: 0; font-size: 1.2rem;">我</div>
-                        <div style="flex: 1; display: flex; flex-direction: column; gap: 15px;">
-                            <textarea id="commentInput" rows="3" placeholder="写下你对网络文明建设的看法...（文明发言，共建和谐）"></textarea>
-                            <div style="text-align: right;">
-                                <button class="btn" onclick="addComment()">
-                                    <i class="fas fa-paper-plane"></i> 发布上墙
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="message-wall" id="commentList">
-                        <div style="text-align: center; width: 100%; padding: 40px; color: #999;">
-                            <i class="fas fa-circle-notch fa-spin"></i> 正在连接云端数据库...
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="section" id="gallery">
-            <div class="container">
-                <div class="section-title">
-                    <h2>光影足迹 · 共建风采</h2>
-                    <p style="margin-top:10px; color:#666;">践行科学发展观，行知学子在行动</p>
-                </div>
-                <div class="gallery-grid">
-                    <div class="gallery-item" onclick="viewImage(this)">
-                        <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=600&q=80" class="gallery-img">
-                        <div class="gallery-overlay">
-                            <div class="gallery-title">理论研讨会</div>
-                            <div class="gallery-desc">深入学习科学发展观内涵</div>
-                        </div>
-                    </div>
-                    <div class="gallery-item" onclick="viewImage(this)">
-                        <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=600&q=80" class="gallery-img">
-                        <div class="gallery-overlay">
-                            <div class="gallery-title">网络文明宣讲</div>
-                            <div class="gallery-desc">进班级宣讲网络安全知识</div>
-                        </div>
-                    </div>
-                    <div class="gallery-item" onclick="viewImage(this)">
-                        <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=600&q=80" class="gallery-img">
-                        <div class="gallery-overlay">
-                            <div class="gallery-title">共建仪式</div>
-                            <div class="gallery-desc">师生共同签署文明公约</div>
-                        </div>
-                    </div>
-                    <div class="gallery-item" onclick="viewImage(this)">
-                        <img src="https://images.unsplash.com/photo-1577563908411-5077b6dc7624?auto=format&fit=crop&w=600&q=80" class="gallery-img">
-                        <div class="gallery-overlay">
-                            <div class="gallery-title">圆桌派讨论</div>
-                            <div class="gallery-desc">学生代表畅谈网络治理</div>
-                        </div>
-                    </div>
-                    <div class="gallery-item" onclick="viewImage(this)">
-                        <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" class="gallery-img">
-                        <div class="gallery-overlay">
-                            <div class="gallery-title">志愿服务</div>
-                            <div class="gallery-desc">协助社区清理不良信息</div>
-                        </div>
-                    </div>
-                    <div class="gallery-item" onclick="viewImage(this)">
-                        <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=600&q=80" class="gallery-img">
-                        <div class="gallery-overlay">
-                            <div class="gallery-title">团队合影</div>
-                            <div class="gallery-desc">行知清朗项目组全体成员</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="section" id="resources">
-            <div class="container">
-                <div class="section-title"><h2>学习资源库</h2></div>
-                <div class="resource-grid">
-                    <div class="resource-card">
-                        <i class="fas fa-gavel" style="font-size: 3rem; color: #e74c3c; margin-bottom: 20px;"></i>
-                        <h4 style="margin-bottom: 10px; font-size: 1.1rem;">网络安全法</h4>
-                        <p style="color: #666; font-size: 0.9rem; margin-bottom: 20px;">国家网信办官方全文发布</p>
-                        <a href="https://www.cac.gov.cn/2016-11/07/c_1119867116.htm" class="btn btn-outline" style="font-size: 0.9rem;">阅读全文</a>
-                    </div>
-                    <div class="resource-card">
-                        <i class="fas fa-video" style="font-size: 3rem; color: #3498db; margin-bottom: 20px;"></i>
-                        <h4 style="margin-bottom: 10px; font-size: 1.1rem;">网络强国论述</h4>
-                        <p style="color: #666; font-size: 0.9rem; margin-bottom: 20px;">学习强国重要论述摘编</p>
-                        <a href="https://www.xuexi.cn/lgpage/detail/index.html?id=179923331428698591&item_id=179923331428698591" class="btn btn-outline" style="font-size: 0.9rem;">立即学习</a>
-                    </div>
-                    <div class="resource-card">
-                        <i class="fas fa-file-alt" style="font-size: 3rem; color: #2ecc71; margin-bottom: 20px;"></i>
-                        <h4>文明建设专题</h4>
-                        <p style="color: #666; font-size: 0.9rem; margin-bottom: 20px;">新华网网络文明建设专题</p>
-                        <a href="https://www.news.cn/20250611/3d2c70d82cba4c55854735a39ebb0baa/c.html" class="btn btn-outline" style="font-size: 0.9rem;">查看详情</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <footer class="footer-artistic">
-            <div class="container">
-                <h2 class="footer-title">行知清朗 E-SPACE 项目组</h2>
-                <p class="footer-subtitle">指导老师：王娜 | 浙江师范大学行知学院</p>
-                
-                <div class="team-container">
-                    <span class="member-tag"><i class="fas fa-user"></i> 陈佳凌</span>
-                    <span class="member-tag"><i class="fas fa-user"></i> 黄奕</span>
-                    <span class="member-tag"><i class="fas fa-user"></i> 袁璐茜</span>
-                    <span class="member-tag"><i class="fas fa-user"></i> 陆楚璇</span>
-                </div>
-
-                <button class="back-to-top" onclick="window.scrollTo(0,0)">
-                    <i class="fas fa-arrow-up"></i> 回到顶部
+    <section id="learning" class="container">
+        <div class="learning-grid">
+            <div class="quote-box fade-in-up">
+                <i class="fas fa-quote-left" style="font-size: 3rem; opacity: 0.3; position: absolute; top: 30px; left: 30px;"></i>
+                <div class="quote-text" id="dailyQuote">“网络空间是亿万民众共同的精神家园。网络空间天朗气清、生态良好，符合人民利益。”</div>
+                <div style="font-size: 1.1rem; opacity: 0.9;">—— 习近平</div>
+                <button onclick="refreshQuote()" style="margin-top:30px; background:rgba(255,255,255,0.2); border:none; color:white; padding:10px 20px; border-radius:30px; cursor:pointer;">
+                    <i class="fas fa-sync-alt"></i> 换一句
                 </button>
             </div>
-        </footer>
 
-        <div class="modal" id="linkModal">
-            <div class="modal-content">
-                <i class="fas fa-external-link-alt" style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;"></i>
-                <h3>即将跳转外部页面</h3>
-                <p style="color: #666; margin: 15px 0;">您即将离开本平台前往：<br><strong id="targetUrl" style="word-break: break-all; color: var(--primary);"></strong></p>
-                <div style="display: flex; gap: 10px; justify-content: center;">
-                    <button class="btn btn-outline" onclick="document.getElementById('linkModal').style.display='none'">取消</button>
-                    <button class="btn" onclick="confirmJump()">确认跳转</button>
+            <div class="quiz-container fade-in-up">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <h3 style="color:var(--primary);"><i class="fas fa-pen-fancy"></i> 每日理论自测</h3>
+                    <div style="font-size:0.9rem; font-weight:bold; color:var(--gold);">
+                        <span id="quiz-index">第 1/10 题</span> | <span id="quiz-score-display">得分: 0</span>
+                    </div>
+                </div>
+                
+                <div id="quiz-wrapper">
+                    <p id="question-text" style="font-weight:bold; margin-bottom:20px; font-size:1.1rem; min-height: 50px;">题目加载中...</p>
+                    <div id="options-container"></div>
+                    <div id="feedback-msg" style="margin-top:15px; font-weight:bold; min-height: 24px;"></div>
+                    <button id="next-btn" class="btn-glow" onclick="nextQuestion()" style="padding: 8px 25px; font-size: 0.9rem; margin-top: 15px; display: none;">下一题</button>
                 </div>
             </div>
         </div>
+    </section>
 
-        <div class="modal" id="msgModal">
-            <div class="modal-content">
-                <h3 id="msgTitle" style="color: var(--primary); margin-bottom: 10px;">提示</h3>
-                <p id="msgContent">内容</p>
-                <button class="btn" onclick="document.getElementById('msgModal').style.display='none'" style="margin-top: 20px;">确定</button>
-            </div>
+    <section id="data" class="container" style="padding-bottom: 0;">
+        <div class="section-header">
+            <span class="section-tag">Data Insight</span>
+            <h2 class="section-title">数字洞察 · 现状分析</h2>
         </div>
 
-        <div class="modal" id="imgModal" onclick="this.style.display='none'">
-            <div class="modal-content" style="max-width: 900px; background: transparent; box-shadow: none; border: none; padding: 0;">
-                <img id="previewImg" src="" style="width: 100%; border-radius: 15px; box-shadow: 0 20px 60px rgba(0,0,0,0.6); border: 4px solid white;">
-            </div>
+        <div class="survey-banner fade-in-up">
+            <h3 style="color: var(--primary); margin-bottom: 10px; font-size: 1.5rem;">您的声音很重要！</h3>
+            <p style="color: #666; margin-bottom: 25px;">为了更精准地了解校园网络现状，请参与知行清朗实时问卷调查。</p>
+            <a href="https://v.wjx.cn/vm/hLDRJXz.aspx#" target="_blank" class="btn-glow">
+                <i class="fas fa-edit"></i> 立即参与问卷调查
+            </a>
         </div>
 
-        <canvas id="certCanvas" width="800" height="600" style="display: none;"></canvas>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+            <div style="background:white; padding:30px; border-radius:16px; box-shadow:var(--shadow-float);">
+                <h4 style="text-align:center; margin-bottom:20px;">主要网络困扰分布</h4>
+                <canvas id="pieChart"></canvas>
+            </div>
+            <div style="background:white; padding:30px; border-radius:16px; box-shadow:var(--shadow-float);">
+                <h4 style="text-align:center; margin-bottom:20px;">各年级文明参与度</h4>
+                <canvas id="barChart"></canvas>
+            </div>
+        </div>
+    </section>
 
-        <script src="https://unpkg.com/leancloud-storage@4.12.0/dist/av-min.js"></script>
-        <script>
-            // --- 1. LeanCloud 初始化 ---
-            const APP_ID = "fUQlsmdwimD8CkUDvirxrOSz-MdYXbMMI";
-            const APP_KEY = "vIP5C42sbdnnftyHFPj1y5mj";
-            const SERVER_URL = "https://fuqlsmdw.api.lncldglobal.com"; 
+    <section id="pledge" class="container">
+        <div class="section-header">
+            <span class="section-tag">The Pledge</span>
+            <h2 class="section-title">新时代文明契约</h2>
+        </div>
+        <div class="pledge-bg fade-in-up">
+            <h2 style="text-align:center; font-family:'Noto Serif SC'; font-size:2.2rem; margin-bottom:40px; color:var(--primary);">知行清朗 · 网络文明公约</h2>
+            <div class="pledge-text">
+                <p>一、 <strong>知法守法</strong>：严格遵守国家法律法规，自觉维护国家安全和公共利益，不触碰法律底线。</p>
+                <p>二、 <strong>崇德向善</strong>：践行社会主义核心价值观，传播正能量，抵制低俗信息，共建网络精神家园。</p>
+                <p>三、 <strong>理性发声</strong>：明辨是非，不信谣不传谣，拒绝网络暴力，尊重他人观点，进行建设性交流。</p>
+                <p>四、 <strong>安全护航</strong>：提高防范意识，保护个人隐私，谨防网络诈骗，维护自身合法权益。</p>
+            </div>
+            
+            <div class="signature-area" id="signArea" style="text-align: right; margin-top: 50px;">
+                <input type="text" id="signerName" class="input-stylish" placeholder="请输入您的姓名以签署">
+                <button class="btn-glow" onclick="signPledge()" style="padding: 14px 35px; font-size: 1rem; margin-left: 15px;">郑重承诺</button>
+            </div>
+            
+            <div id="certArea" style="display:none; text-align:right; margin-top:50px;">
+                <p style="font-size:1.3rem; color:var(--primary); font-family:'楷体'; font-weight:bold;">承诺人：<span id="displaySigner"></span></p>
+                <p style="color:#666; font-size:0.95rem;">2024年12月</p>
+                <button class="btn-glow" onclick="downloadCert()" style="margin-top:20px; font-size:0.95rem; background:#333; box-shadow:none;"><i class="fas fa-file-download"></i> 下载荣誉证书</button>
+            </div>
 
-            const { Query, User } = AV;
-            AV.init({
-                appId: APP_ID,
-                appKey: APP_KEY,
-                serverURL: SERVER_URL
-            });
+            <div class="seal-anim" id="seal">知行<br>清朗</div>
+        </div>
+    </section>
 
-            // --- 2. 链接拦截系统 ---
-            let targetLink = "";
-            document.addEventListener('click', function(e) {
-                if(e.target.classList.contains('quiz-btn') || e.target.closest('#voice') || e.target.tagName !== 'A' && !e.target.closest('a')) return;
-                const link = e.target.closest('a');
-                if(link && link.href.startsWith('http') && !link.href.includes(window.location.host)) {
-                    e.preventDefault();
-                    targetLink = link.href;
-                    document.getElementById('targetUrl').textContent = targetLink;
-                    document.getElementById('linkModal').style.display = 'flex';
+    <section id="voice" class="container">
+        <div class="section-header">
+            <span class="section-tag">Voices</span>
+            <h2 class="section-title">青年之声 · 留言墙</h2>
+        </div>
+        <div style="max-width: 800px; margin: 0 auto 50px; display:flex; gap:15px;">
+            <input type="text" id="msgInput" class="input-stylish" style="flex:1; width:auto;" placeholder="分享你对网络文明的看法...">
+            <button class="btn-glow" onclick="postMsg()" style="padding: 10px 35px;"><i class="fas fa-paper-plane"></i> 发布</button>
+        </div>
+        <div class="comment-wall" id="wall">
+            <div class="comment-card">
+                <div style="font-weight:bold; margin-bottom:8px; color:var(--primary);">知行学子</div>
+                <p style="color:#555;">知行合一，从我做起。不仅要懂网络安全知识，更要在上网时规范自己的言行。</p>
+            </div>
+            <div class="comment-card">
+                <div style="font-weight:bold; margin-bottom:8px; color:var(--primary);">红色先锋</div>
+                <p style="color:#555;">非常有意义的平台！资源库里的防诈骗指南很实用，已经转给室友了。</p>
+            </div>
+            <div class="comment-card">
+                <div style="font-weight:bold; margin-bottom:8px; color:var(--primary);">追光者</div>
+                <p style="color:#555;">营造清朗网络空间，需要我们每一个人的努力。拒绝网暴！</p>
+            </div>
+        </div>
+    </section>
+    
+    <section id="gallery" class="container">
+        <div class="section-header">
+            <span class="section-tag">Gallery</span>
+            <h2 class="section-title">行知风采 · 光影足迹</h2>
+        </div>
+        <div class="gallery-masonry">
+            <div class="gallery-item fade-in-up">
+                <img src="https://s41.ax1x.com/2025/12/10/pZuhO76.jpg">
+                <div class="gallery-info">
+                    <h4>理论研讨</h4>
+                    <p>深入学习科学发展观</p>
+                </div>
+            </div>
+            <div class="gallery-item fade-in-up">
+                <img src="https://s41.ax1x.com/2025/12/10/pZu4p1H.png">
+                <div class="gallery-info">
+                    <h4>宣讲进班级</h4>
+                    <p>网络安全知识科普</p>
+                </div>
+            </div>
+            <div class="gallery-item fade-in-up">
+                <img src="https://s41.ax1x.com/2025/12/10/pZuhop4.jpg">
+                <div class="gallery-info">
+                    <h4>签约仪式</h4>
+                    <p>师生共同签署公约</p>
+                </div>
+            </div>
+             <div class="gallery-item fade-in-up">
+                <img src="https://s41.ax1x.com/2025/12/10/pZuhL0x.jpg">
+                <div class="gallery-info">
+                    <h4>志愿服务</h4>
+                    <p>社区网络文明宣传</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-logo">知行清朗 E-SPACE</div>
+            <p style="max-width: 600px; margin: 0 auto 30px;">浙江师范大学行知学院 | 《毛泽东思想和中国特色社会主义思想概论》实践项目</p>
+            <div style="display:flex; justify-content:center; gap:15px; flex-wrap:wrap; font-size:0.9rem;">
+                <span style="border:1px solid #444; padding:5px 15px; border-radius:20px;">指导老师：王娜</span>
+                <span style="border:1px solid #444; padding:5px 15px; border-radius:20px;">陈佳凌</span>
+                <span style="border:1px solid #444; padding:5px 15px; border-radius:20px;">黄奕</span>
+                <span style="border:1px solid #444; padding:5px 15px; border-radius:20px;">袁璐茜</span>
+                <span style="border:1px solid #444; padding:5px 15px; border-radius:20px;">陆楚璇</span>
+            </div>
+            <p style="margin-top: 40px; font-size: 0.8rem; color: #444;">Copyright © 2025 Zhixing Qinglang. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <canvas id="certCanvas" width="800" height="600" style="display:none;"></canvas>
+
+    <script>
+        // --- 1. 交互与动画 ---
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if(window.scrollY > 50) nav.classList.add('scrolled');
+            else nav.classList.remove('scrolled');
+            const bg = document.getElementById('parallaxBg');
+            bg.style.transform = `scale(1.05) translateY(${window.scrollY * 0.4}px)`;
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    if(entry.target.querySelector('.counter')) {
+                        entry.target.querySelectorAll('.counter').forEach(startCounter);
+                    }
                 }
             });
-            function confirmJump() { window.open(targetLink, '_blank'); document.getElementById('linkModal').style.display = 'none'; }
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
 
-            // --- 3. 每日一测逻辑 (已扩充为10题) ---
-            const questions = [
-                {q: "科学发展观的第一要义是？", opts: ["A. 全面协调可持续", "B. 发展", "C. 统筹兼顾"], a: 1},
-                {q: "网络强国战略指出，没有____就没有国家安全？", opts: ["A. 网络安全", "B. 信息化", "C. 技术进步"], a: 0},
-                {q: "构建网络空间命运共同体，应坚持什么原则？", opts: ["A. 尊重网络主权", "B. 霸权主义", "C. 单边主义"], a: 0},
-                {q: "遇到网络谣言，正确的做法是？", opts: ["A. 立即转发", "B. 辱骂发布者", "C. 举报并等待辟谣"], a: 2},
-                {q: "社会主义核心价值观在社会层面的要求是？", opts: ["A. 富强民主文明和谐", "B. 自由平等公正法治", "C. 爱国敬业诚信友善"], a: 1},
-                // 新增题目 6-10
-                {q: "科学发展观的核心是？", opts: ["A. 以人为本", "B. 经济建设", "C. 改革开放"], a: 0},
-                {q: "科学发展观的基本要求是？", opts: ["A. 全面协调可持续", "B. 统筹兼顾", "C. 发展"], a: 0},
-                {q: "《网络安全法》规定，网络运营者应当加强对其用户发布的信息的管理，发现法律、行政法规禁止发布或者传输的信息的，应当立即停止传输该信息，采取消除等处置措施，防止信息扩散，保存有关记录，并向有关主管部门报告。", opts: ["A. 正确", "B. 错误"], a: 0},
-                {q: "文明上网，要求我们做到？", opts: ["A. 诚实友好交流", "B. 随意发布言论", "C. 盲目跟风"], a: 0},
-                {q: "防范网络诈骗，最重要的原则是？", opts: ["A. 不轻信，不转账", "B. 贪小便宜", "C. 点击不明链接"], a: 0}
-            ];
-            let qIndex = 0;
-
-            function renderQuiz() {
-                const box = document.getElementById('quiz-box');
-                if(qIndex >= questions.length) {
-                    box.innerHTML = `<div style="text-align:center; padding:40px;"><i class="fas fa-trophy" style="font-size:3rem; color:#FFD700"></i><h3 style="color:var(--primary);margin-top:10px;">挑战通关！</h3><p>您已完成所有题目。</p><button class="btn" onclick="qIndex=0;renderQuiz()" style="margin-top:15px;">重新挑战</button></div>`;
-                    return;
-                }
-                const q = questions[qIndex];
-                let html = `<h3 style="color:var(--primary); margin-bottom:15px;"><i class="fas fa-brain"></i> 每日一测 (${qIndex+1}/${questions.length})</h3>
-                            <p style="font-weight:bold; margin-bottom:15px;">${q.q}</p>`;
-                q.opts.forEach((opt, idx) => {
-                    html += `<button class="quiz-btn" onclick="handleAnswer(${idx}, ${q.a}, this)">${opt}</button>`;
-                });
-                box.innerHTML = html;
-            }
-
-            function handleAnswer(choice, correct, btn) {
-                const all = document.querySelectorAll('.quiz-btn');
-                all.forEach(b => b.disabled = true);
-                if(choice === correct) {
-                    btn.style.background = "#d4edda"; btn.style.borderColor = "#28a745"; btn.style.color = "#155724";
-                    setTimeout(() => { qIndex++; renderQuiz(); }, 1000);
+        function startCounter(el) {
+            const target = +el.getAttribute('data-target');
+            const duration = 2000; 
+            const step = target / (duration / 16);
+            let current = 0;
+            const timer = setInterval(() => {
+                current += step;
+                if(current >= target) {
+                    el.innerText = target;
+                    clearInterval(timer);
                 } else {
-                    btn.style.background = "#f8d7da"; btn.style.borderColor = "#dc3545"; btn.style.color = "#721c24";
-                    setTimeout(() => {
-                        showModal("回答错误", "请再思考一下！");
-                        all.forEach(b => b.disabled = false);
-                        btn.style.background = ""; btn.style.borderColor = "#eee"; btn.style.color = "";
-                    }, 500);
+                    el.innerText = Math.ceil(current);
                 }
+            }, 16);
+            el.classList.remove('counter');
+        }
+
+        // --- 2. 图表 ---
+        const pieCtx = document.getElementById('pieChart').getContext('2d');
+        new Chart(pieCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['网络谣言', '网络暴力', '电信诈骗', '信息泄露'],
+                datasets: [{
+                    data: [30, 25, 25, 20],
+                    backgroundColor: ['#800000', '#d4af37', '#2d3436', '#b2bec3'],
+                    borderWidth: 0
+                }]
+            },
+            options: { cutout: '70%', responsive: true }
+        });
+
+        const barCtx = document.getElementById('barChart').getContext('2d');
+        new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: ['大一', '大二', '大三', '大四'],
+                datasets: [{
+                    label: '参与人数',
+                    data: [98, 120, 90, 60],
+                    backgroundColor: '#800000',
+                    borderRadius: 5
+                }]
+            },
+            options: { scales: { y: { beginAtZero: true } } }
+        });
+
+        // --- 3. 业务逻辑 ---
+        
+        // 每日金句
+        const quotes = [
+            { text: "网络空间是亿万民众共同的精神家园。网络空间天朗气清、生态良好，符合人民利益。", author: "习近平" },
+            { text: "知者行之始，行者知之成。圣学只一个功夫，知行不可分作两事。", author: "王阳明" },
+            { text: "科学发展观的核心是以人为本，基本要求是全面协调可持续。", author: "理论文献" },
+            { text: "依法上网、文明上网、理性上网，做新时代中国好网民。", author: "网络文明倡议" },
+            { text: "纸上得来终觉浅，绝知此事要躬行。", author: "陆游" },
+            { text: "博学之，审问之，慎思之，明辨之，笃行之。", author: "《礼记·中庸》" },
+            { text: "空谈误国，实干兴邦。新时代是奋斗者的时代。", author: "习近平" },
+            { text: "道虽迩，不行不至；事虽小，不为不成。", author: "《荀子·修身》" },
+            { text: "知是基础、是前提，行是重点、是关键，必须以知促行、以行促知。", author: "知行合一论述" },
+            { text: "青年一代有理想、有本领、有担当，国家就有前途，民族就有希望。", author: "习近平" },
+            { text: "必须坚持以人为本。全心全意为人民服务是党的根本宗旨。", author: "科学发展观核心内涵" },
+            { text: "爱国、敬业、诚信、友善，是公民个人层面的价值准则。", author: "社会主义核心价值观" },
+            { text: "人无德不立，国无德不兴。法安天下，德润人心。", author: "道德与法治" },
+            { text: "不驰于空想、不骛于虚声，一步一个脚印，踏踏实实干好工作。", author: "李大钊" }
+        ];
+        function refreshQuote() {
+            const q = quotes[Math.floor(Math.random() * quotes.length)];
+            const el = document.getElementById('dailyQuote');
+            el.style.opacity = 0;
+            setTimeout(() => {
+                el.innerText = "“" + q.text + "”";
+                el.nextElementSibling.innerText = "—— " + q.author;
+                el.style.opacity = 1;
+            }, 300);
+        }
+
+        // --- 4. 每日一测 (10题系统) ---
+        const questions = [
+            { q: "科学发展观的第一要义是？", opts: ["A. 发展", "B. 以人为本", "C. 全面协调"], a: 0 },
+            { q: "科学发展观的核心是？", opts: ["A. 统筹兼顾", "B. 以人为本", "C. 可持续发展"], a: 1 },
+            { q: "网络强国战略提出，没有____就没有国家安全？", opts: ["A. 信息化", "B. 网络安全", "C. 技术进步"], a: 1 },
+            { q: "遇到网络诈骗，首要原则是？", opts: ["A. 立即转账", "B. 不轻信、不转账", "C. 骂回去"], a: 1 },
+            { q: "社会主义核心价值观在个人层面的要求是？", opts: ["A. 爱国、敬业、诚信、友善", "B. 自由、平等", "C. 富强、民主"], a: 0 },
+            { q: "《网络安全法》正式实施的时间是？", opts: ["A. 2016年", "B. 2017年6月1日", "C. 2018年"], a: 1 },
+            { q: "构建网络空间命运共同体，应坚持____原则？", opts: ["A. 尊重网络主权", "B. 霸权主义", "C. 单边主义"], a: 0 },
+            { q: "面对网络谣言，我们应该？", opts: ["A. 随手转发", "B. 不信谣、不传谣", "C. 置之不理"], a: 1 },
+            { q: "文明上网要求我们拒绝？", opts: ["A. 理性发声", "B. 网络暴力", "C. 友善交流"], a: 1 },
+            { q: "“知行合一”是谁提出的思想？", opts: ["A. 孔子", "B. 王阳明", "C. 朱熹"], a: 1 }
+        ];
+
+        let currentQIndex = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            if (currentQIndex >= questions.length) {
+                let msg = "";
+                if(score === 10) msg = "完美！你是真正的网络文明先锋！";
+                else if(score >= 8) msg = "成绩优秀，继续保持！";
+                else msg = "还需要加强理论学习哦！";
+                
+                document.getElementById('quiz-wrapper').innerHTML = `
+                    <div style="text-align:center; padding:20px;">
+                        <i class="fas fa-trophy" style="font-size:3rem; color:var(--gold); margin-bottom:15px;"></i>
+                        <h3 style="margin-bottom:10px;">挑战结束</h3>
+                        <p style="font-size:1.2rem; margin-bottom:10px;">您的得分：<strong style="color:var(--primary)">${score} / 10</strong></p>
+                        <p style="color:#666; margin-bottom:20px;">${msg}</p>
+                        <button class="btn-glow" onclick="resetQuiz()" style="padding:10px 25px;">重新挑战</button>
+                    </div>
+                `;
+                return;
             }
 
-            // --- 4. 评论区 ---
-            function loadComments() {
-                const wall = document.getElementById('commentList');
-                const query = new AV.Query('RedComments');
-                query.descending('createdAt');
-                query.limit(20);
-                query.find().then(res => {
-                    wall.innerHTML = "";
-                    if(res.length === 0) { wall.innerHTML = "<div style='text-align:center; color:#999; grid-column:1/-1;'>暂无留言，来做第一个发言人！</div>"; return; }
-                    res.forEach(c => {
-                        const name = c.get('name') || "匿名";
-                        const content = c.get('content');
-                        const time = c.createdAt.toISOString().split('T')[0];
-                        const card = document.createElement('div');
-                        card.className = 'message-card';
-                        card.innerHTML = `<div class="message-header"><div class="message-avatar" style="background:${getRandomColor()}">${name[0]}</div><span class="message-name">${name}</span><span class="message-time">${time}</span></div><div class="message-body">${content}</div>`;
-                        wall.appendChild(card);
-                    });
-                }).catch(e => { console.error(e); wall.innerHTML = "<div style='text-align:center; color:red; grid-column:1/-1;'>连接失败，请检查密钥设置</div>"; });
+            const q = questions[currentQIndex];
+            document.getElementById('quiz-index').innerText = `第 ${currentQIndex + 1}/10 题`;
+            document.getElementById('question-text').innerText = q.q;
+            document.getElementById('feedback-msg').innerHTML = "";
+            document.getElementById('next-btn').style.display = "none";
+            
+            const optsContainer = document.getElementById('options-container');
+            optsContainer.innerHTML = "";
+            q.opts.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-opt';
+                btn.innerText = opt;
+                btn.onclick = () => handleAnswer(btn, idx, q.a);
+                optsContainer.appendChild(btn);
+            });
+        }
+
+        function handleAnswer(btn, selectedIdx, correctIdx) {
+            const allBtns = document.querySelectorAll('.quiz-opt');
+            allBtns.forEach(b => b.classList.add('disabled'));
+
+            if (selectedIdx === correctIdx) {
+                btn.classList.add('correct');
+                document.getElementById('feedback-msg').innerHTML = '<span style="color:green"><i class="fas fa-check"></i> 回答正确！</span>';
+                score++;
+            } else {
+                btn.classList.add('wrong');
+                allBtns[correctIdx].classList.add('correct');
+                document.getElementById('feedback-msg').innerHTML = '<span style="color:red"><i class="fas fa-times"></i> 回答错误</span>';
+            }
+            document.getElementById('quiz-score-display').innerText = `得分: ${score}`;
+            document.getElementById('next-btn').style.display = "inline-block";
+        }
+
+        function nextQuestion() {
+            currentQIndex++;
+            loadQuestion();
+        }
+
+        function resetQuiz() {
+            currentQIndex = 0;
+            score = 0;
+            document.getElementById('quiz-score-display').innerText = `得分: 0`;
+            document.getElementById('quiz-wrapper').innerHTML = `
+                <p id="question-text" style="font-weight:bold; margin-bottom:20px; font-size:1.1rem; min-height: 50px;"></p>
+                <div id="options-container"></div>
+                <div id="feedback-msg" style="margin-top:15px; font-weight:bold; min-height: 24px;"></div>
+                <button id="next-btn" class="btn-glow" onclick="nextQuestion()" style="padding: 8px 25px; font-size: 0.9rem; margin-top: 15px; display: none;">下一题</button>
+            `;
+            loadQuestion();
+        }
+        
+        loadQuestion();
+
+        // --- 5. 留言 & 证书 ---
+        function postMsg() {
+            const val = document.getElementById('msgInput').value;
+            if(!val) return alert("请输入内容");
+            const wall = document.getElementById('wall');
+            const card = document.createElement('div');
+            card.className = 'comment-card';
+            card.innerHTML = `<div style="font-weight:bold; margin-bottom:8px; color:var(--primary);">我</div><p style="color:#555;">${val}</p>`;
+            wall.prepend(card);
+            document.getElementById('msgInput').value = "";
+        }
+
+        function signPledge() {
+            const name = document.getElementById('signerName').value;
+            if(!name) return alert("请签署姓名");
+            document.getElementById('signArea').style.display = 'none';
+            document.getElementById('certArea').style.display = 'block';
+            document.getElementById('displaySigner').innerText = name;
+            document.getElementById('seal').classList.add('stamped');
+            localStorage.setItem('zx_name', name);
+            localStorage.setItem('zx_signed', true);
+        }
+
+        function downloadCert() {
+            const canvas = document.getElementById('certCanvas');
+            const ctx = canvas.getContext('2d');
+            const name = localStorage.getItem('zx_name') || "同学";
+            
+            // --- 1. 绘制纸张质感背景 (模拟羊皮纸) ---
+            const gradient = ctx.createRadialGradient(400, 300, 50, 400, 300, 500);
+            gradient.addColorStop(0, "#fffbf0");
+            gradient.addColorStop(1, "#f3e7d3");
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 800, 600);
+
+            // --- 2. 绘制背景水印 ---
+            ctx.save();
+            ctx.translate(400, 300);
+            ctx.rotate(-Math.PI / 6);
+            ctx.font = "bold 120px 'Noto Serif SC', serif";
+            ctx.fillStyle = "rgba(212, 175, 55, 0.08)";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText("知行清朗", 0, 0);
+            ctx.restore();
+
+            // --- 3. 绘制精美边框 ---
+            const margin = 30;
+            const borderW = 740;
+            const borderH = 540;
+
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = "#800000";
+            ctx.strokeRect(margin - 5, margin - 5, borderW + 10, borderH + 10);
+
+            ctx.lineWidth = 8;
+            ctx.strokeStyle = "#800000";
+            ctx.strokeRect(margin, margin, borderW, borderH);
+
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "#d4af37";
+            ctx.strokeRect(margin + 8, margin + 8, borderW - 16, borderH - 16);
+
+            // --- 4. 绘制四角花纹 (装饰元素) ---
+            function drawCorner(x, y, rotation) {
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.rotate(rotation);
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(40, 0);
+                ctx.lineTo(35, 5);
+                ctx.lineTo(10, 5);
+                ctx.lineTo(5, 10);
+                ctx.lineTo(5, 35);
+                ctx.lineTo(0, 40);
+                ctx.closePath();
+                ctx.fillStyle = "#800000";
+                ctx.fill();
+                
+                ctx.beginPath();
+                ctx.arc(15, 15, 3, 0, Math.PI * 2);
+                ctx.fillStyle = "#d4af37";
+                ctx.fill();
+                ctx.restore();
             }
 
-            function addComment() {
-                const val = document.getElementById('commentInput').value.trim();
-                if(!val) { showModal("提示", "请输入内容"); return; }
-                const Comment = AV.Object.extend('RedComments');
-                const c = new Comment();
-                c.set('name', localStorage.getItem('xz_name') || "红色先锋");
-                c.set('content', val);
-                c.save().then(() => {
-                    document.getElementById('commentInput').value = "";
-                    showModal("成功", "发布成功！");
-                    loadComments();
-                }, (err) => { showModal("失败", "发送失败：" + err.message); });
+            drawCorner(margin, margin, 0); 
+            drawCorner(margin + borderW, margin, Math.PI / 2);
+            drawCorner(margin + borderW, margin + borderH, Math.PI);
+            drawCorner(margin, margin + borderH, -Math.PI / 2);
+
+            // --- 5. 绘制文字内容 ---
+            ctx.textAlign = "center";
+
+            ctx.shadowColor = "rgba(0, 0, 0, 0.2)";
+            ctx.shadowBlur = 5;
+            ctx.shadowOffsetX = 2;
+            ctx.shadowOffsetY = 2;
+            ctx.fillStyle = "#800000";
+            ctx.font = "bold 60px 'Noto Serif SC', serif";
+            ctx.fillText("荣誉证书", 400, 140);
+            
+            ctx.shadowColor = "transparent";
+            ctx.fillStyle = "#d4af37";
+            ctx.font = "16px 'Noto Sans SC', sans-serif";
+            ctx.letterSpacing = "5px";
+            ctx.fillText("HONORARY CREDENTIAL", 400, 175);
+
+            ctx.beginPath();
+            ctx.moveTo(300, 190);
+            ctx.lineTo(500, 190);
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "#e0e0e0";
+            ctx.stroke();
+
+            ctx.fillStyle = "#333";
+            ctx.font = "24px 'Noto Sans SC', sans-serif";
+            ctx.fillText("兹授予", 400, 250);
+
+            ctx.font = "bold 48px '楷体', 'Noto Serif SC', serif";
+            ctx.fillStyle = "#1a1a1a";
+            ctx.fillText(name + " 同学", 400, 310);
+            
+            const nameWidth = ctx.measureText(name + " 同学").width;
+            ctx.beginPath();
+            ctx.moveTo(400 - nameWidth/2 - 10, 320);
+            ctx.lineTo(400 + nameWidth/2 + 10, 320);
+            ctx.strokeStyle = "#d4af37";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.fillStyle = "#555";
+            ctx.font = "24px 'Noto Sans SC', sans-serif";
+            ctx.fillText("“网络文明知行先锋” 荣誉称号", 400, 370);
+            
+            ctx.font = "16px 'Noto Sans SC'";
+            ctx.fillStyle = "#888";
+            ctx.fillText("以表彰其在构建清朗网络空间中的积极贡献", 400, 400);
+
+            // --- 6. 绘制印章 (Seal) ---
+            ctx.save();
+            ctx.translate(630, 460);
+            ctx.rotate(-0.2);
+
+            ctx.beginPath();
+            ctx.arc(0, 0, 70, 0, Math.PI * 2);
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = "rgba(220, 20, 60, 0.8)";
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.arc(0, 0, 64, 0, Math.PI * 2);
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            drawStar(ctx, 0, -10, 5, 20, 8);
+            ctx.fillStyle = "rgba(220, 20, 60, 0.8)";
+            ctx.fill();
+
+            ctx.font = "bold 18px 'Noto Serif SC'";
+            ctx.fillStyle = "rgba(220, 20, 60, 0.8)";
+            ctx.textAlign = "center";
+            ctx.fillText("知行清朗", 0, 25);
+            ctx.font = "12px 'Noto Sans SC'";
+            ctx.fillText("E-SPACE项目组", 0, 45);
+            
+            ctx.restore();
+
+            // --- 7. 落款与日期 ---
+            ctx.textAlign = "right";
+            ctx.fillStyle = "#333";
+            ctx.font = "bold 22px 'Noto Serif SC', serif";
+            ctx.fillText("知行清朗 E-SPACE 项目组", 720, 480);
+            
+            ctx.font = "18px 'Noto Sans SC'";
+            ctx.fillStyle = "#666";
+            ctx.fillText("2025年12月", 720, 515);
+
+            // --- 8. 导出下载 ---
+            const link = document.createElement('a');
+            link.download = `知行清朗证书_${name}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        // 辅助函数：画五角星
+        function drawStar(ctx, cx, cy, spikes, outerRadius, innerRadius) {
+            let rot = Math.PI / 2 * 3;
+            let x = cx;
+            let y = cy;
+            let step = Math.PI / spikes;
+
+            ctx.beginPath();
+            ctx.moveTo(cx, cy - outerRadius);
+            for (let i = 0; i < spikes; i++) {
+                x = cx + Math.cos(rot) * outerRadius;
+                y = cy + Math.sin(rot) * outerRadius;
+                ctx.lineTo(x, y);
+                rot += step;
+
+                x = cx + Math.cos(rot) * innerRadius;
+                y = cy + Math.sin(rot) * innerRadius;
+                ctx.lineTo(x, y);
+                rot += step;
             }
+            ctx.lineTo(cx, cy - outerRadius);
+            ctx.closePath();
+        }
 
-            // --- 5. 承诺书与证书 ---
-            function signPledge() {
-                const name = document.getElementById('signerName').value;
-                if(!name) { showModal("提示", "请输入姓名"); return; }
-                localStorage.setItem('xz_signed', 'true');
-                localStorage.setItem('xz_name', name);
-                document.getElementById('seal').classList.add('active');
-                document.getElementById('signForm').style.display = 'none';
-                document.getElementById('downloadArea').style.display = 'block';
-                showModal("成功", "签署成功！");
+        window.onload = function() {
+            if(localStorage.getItem('zx_signed')) {
+                document.getElementById('signerName').value = localStorage.getItem('zx_name');
+                signPledge();
             }
-
-            function generateCertificate() {
-                const c = document.getElementById('certCanvas');
-                const ctx = c.getContext('2d');
-                const name = localStorage.getItem('xz_name');
-                ctx.fillStyle = "#fffdf5"; ctx.fillRect(0,0,800,600);
-                ctx.strokeStyle = "#b71c1c"; ctx.lineWidth = 15; ctx.strokeRect(20,20,760,560);
-                ctx.strokeStyle = "#ffc107"; ctx.lineWidth = 2; ctx.strokeRect(40,40,720,520);
-                ctx.fillStyle = "#b71c1c"; ctx.font = "bold 50px Microsoft YaHei"; ctx.textAlign = "center";
-                ctx.fillText("荣誉证书", 400, 150);
-                ctx.fillStyle = "#333"; ctx.font = "30px Microsoft YaHei";
-                ctx.fillText("授予： " + name + " 同学", 400, 250);
-                ctx.fillText("网络文明先锋称号", 400, 350);
-                ctx.font = "20px Microsoft YaHei"; ctx.textAlign = "right";
-                ctx.fillText("行知清朗E空间项目组", 700, 480);
-                ctx.fillText("2024年", 700, 520);
-                const a = document.createElement('a'); a.download = "证书.png"; a.href = c.toDataURL(); a.click();
-            }
-
-            // --- 6. 通用 ---
-            function showModal(t, m) {
-                document.getElementById('modalTitle').innerText = t;
-                document.getElementById('modalMsg').innerText = m;
-                document.getElementById('myModal').style.display = 'flex';
-            }
-
-            function viewImage(el) {
-                const src = el.querySelector('img').src;
-                document.getElementById('previewImg').src = src;
-                document.getElementById('imgModal').style.display = 'flex';
-            }
-
-            function getRandomColor() {
-                const colors = ['#b71c1c', '#f57f17', '#1b5e20', '#0d47a1', '#4a148c'];
-                return colors[Math.floor(Math.random() * colors.length)];
-            }
-
-            // --- 7. 初始化 ---
-            window.onload = function() {
-                // 粒子特效
-                const cvs = document.getElementById('particleCanvas'); const ctx = cvs.getContext('2d');
-                cvs.width = window.innerWidth; cvs.height = window.innerHeight;
-                const parts = Array.from({length:50}, () => ({x:Math.random()*cvs.width, y:Math.random()*cvs.height, r:Math.random()*2+1, dx:Math.random()-0.5, dy:Math.random()-0.5}));
-                function ani() { ctx.clearRect(0,0,cvs.width,cvs.height); parts.forEach(p=>{p.x+=p.dx;p.y+=p.dy;if(p.x<0||p.x>cvs.width)p.dx*=-1;if(p.y<0||p.y>cvs.height)p.dy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle="rgba(255,255,255,0.5)";ctx.fill();}); requestAnimationFrame(ani); }
-                ani();
-
-                // 统计数据
-                let v = 2024; setInterval(()=>{ v++; document.getElementById('visitCount').innerText=v; }, 5000);
-
-                // 图表
-                new Chart(document.getElementById('chart-pie'), {
-                    type: 'doughnut',
-                    data: { labels: ['谣言', '网暴', '诈骗', '其他'], datasets: [{ data: [142, 89, 76, 48], backgroundColor: ['#b71c1c', '#f57f17', '#1976D2', '#7f8c8d'] }] },
-                    options: { responsive: true, maintainAspectRatio: false }
-                });
-                new Chart(document.getElementById('chart-bar'), {
-                    type: 'bar',
-                    data: { labels: ['大一', '大二', '大三', '大四'], datasets: [{ label: '参与人数', data: [115, 98, 82, 60], backgroundColor: '#b71c1c' }] },
-                    options: { responsive: true, maintainAspectRatio: false }
-                });
-
-                // 启动逻辑
-                renderQuiz(); 
-                loadComments();
-                if(localStorage.getItem('xz_signed')) {
-                    document.getElementById('seal').classList.add('active');
-                    document.getElementById('signForm').style.display = 'none';
-                    document.getElementById('downloadArea').style.display = 'block';
-                }
-            };
-        </script>
+        }
+    </script>
 </body>
 </html>
